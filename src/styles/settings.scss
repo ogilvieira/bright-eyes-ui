@@ -1,0 +1,14 @@
+/**
+ * src/styles/settings.scss
+ *
+ * Configures SASS variables and Vuetify overwrites
+ */
+
+//  @import "~vuetify/src/styles/styles.sass";
+$root-font-family: "Inter", sans-serif !important;
+ 
+
+// https://vuetifyjs.com/features/sass-variables/`
+@use 'vuetify/settings' with (
+  $body-font-family: $root-font-family
+);
