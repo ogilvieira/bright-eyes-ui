@@ -28,7 +28,7 @@
         </router-link>
       </div>
       <div v-if="message">
-        <v-alert :text="message" :type="messageType" variant="tonal"></v-alert>
+        <v-alert :text="message" :color="messageType" variant="tonal"></v-alert>
       </div>
       <div class="pt-6">
         <v-btn type="submit" :disabled="isLoading" block color="primary" rounded elevation="0" size="large">
@@ -51,7 +51,9 @@
   }
 
   type recoverAxiosType = {
-    message: string;
+    data: {
+      message: string;
+    }
   }
 
 

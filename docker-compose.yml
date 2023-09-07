@@ -1,0 +1,14 @@
+version: "3.4"
+services:
+ bright-eyes-ui:
+   image: node:alpine
+   container_name: bright-eyes-ui
+   entrypoint: /bin/sh
+   ports:
+     - 80:3000
+   working_dir: /dist
+   volumes:
+     - type: bind
+       source: ./
+       target: /dist
+   tty: true

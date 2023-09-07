@@ -38,7 +38,7 @@
         </router-link>
       </div>
       <div v-if="message && messageType">
-        <v-alert :type="messageType" variant="tonal">{message}</v-alert>
+        <v-alert :text="message" variant="tonal" :color="messageType"></v-alert>
       </div>
       <div class="pt-6">
         <v-btn type="submit" :disabled="isLoading" block color="primary" rounded elevation="0" size="large">

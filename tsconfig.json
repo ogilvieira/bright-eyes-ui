@@ -8,6 +8,8 @@
     "module": "esnext",
     "moduleResolution": "node",
     "strict": true,
+    "noImplicitAny": false,
+    "skipLibCheck": true,
     "jsx": "preserve",
     "sourceMap": false,
     "resolveJsonModule": true,
