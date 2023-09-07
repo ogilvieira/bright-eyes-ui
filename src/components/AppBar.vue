@@ -7,7 +7,7 @@
     </template>
 
     <v-spacer />
-    <v-app-bar-title class="d-flex justify-center">{{props.title}}</v-app-bar-title>
+    <v-app-bar-title class="d-flex justify-center ml-0">{{props.title}}</v-app-bar-title>
     <v-spacer />
     <template v-slot:append>
     </template>

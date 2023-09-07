@@ -1,15 +1,28 @@
 // Utilities
 import { defineStore } from 'pinia'
 import jwtDecode from 'jwt-decode';
-import { decode } from 'punycode';
+
+export type userType = {
+  id: number;
+  nome: string;
+  sobrenome: string;
+  tipo: {
+      id: number;
+      key: "gerente" | "cliente" | "vendedor",
+      titulo: string
+  }
+};
+
 export type RootState = {
   token: string | null;
+  user: userType | null;
 };
 
 
 export const useAppStore = defineStore('app', {
   state: () => ({
-    token: null
+    token: null,
+    user: null
   } as RootState),
   getters: {
     isAuthenticated(state){
@@ -28,5 +41,6 @@ export const useAppStore = defineStore('app', {
   },
   persist: {
     storage: localStorage,
+    paths: ['token']
   }
 })

@@ -1,0 +1,3 @@
+[submodule "brigh-eyes-api"]
+	path = brigh-eyes-api
+	url = git@github.com:ogilvieira/brigh-eyes-api.git

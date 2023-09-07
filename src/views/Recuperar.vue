@@ -69,7 +69,7 @@
 
     message.value = '';
     isLoading.value = true;
-    Api.post<recoverAxiosTypeError, recoverAxiosType>('/account/recuperar', {
+    Api().post<recoverAxiosTypeError, recoverAxiosType>('/account/recuperar', {
       email: email.value
     }).then(res => {
       console.info(res);

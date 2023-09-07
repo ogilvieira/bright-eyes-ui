@@ -37,8 +37,8 @@
           <div class="text-subtitle-2">Recuperar senha?</div>
         </router-link>
       </div>
-      <div v-if="message">
-        <v-alert :text="message" :type="messageType" variant="tonal"></v-alert>
+      <div v-if="message && messageType">
+        <v-alert :type="messageType" variant="tonal">{message}</v-alert>
       </div>
       <div class="pt-6">
         <v-btn type="submit" :disabled="isLoading" block color="primary" rounded elevation="0" size="large">
@@ -92,7 +92,7 @@
 
     message.value = '';
     isLoading.value = true;
-    Api.post<recoverAxiosTypeError, recoverAxiosType>('/account/oauth', {
+    Api().post<recoverAxiosTypeError, recoverAxiosType>('/account/oauth', {
       email: email.value,
       senha: password.value
     }).then(res => {
