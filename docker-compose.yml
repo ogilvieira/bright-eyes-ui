@@ -11,9 +11,3 @@ services:
     ports:
       - 3000:3000
     tty: true
-    depends_on:
-      - brighteyesapi
-    links:
-      - brighteyesapi
-  brighteyesapi:
-    build: ./bright-eyes-api
