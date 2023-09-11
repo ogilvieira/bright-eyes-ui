@@ -4,5 +4,5 @@ COPY ./package.json .
 RUN yarn install
 COPY . .
 RUN yarn build
-EXPOSE 3000
+EXPOSE 80
 CMD [ "yarn", "host:prod" ]
