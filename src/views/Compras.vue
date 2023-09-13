@@ -1,5 +1,5 @@
 <template>
-  <app-bar title="Vendas"/>
+  <app-bar title="Compras"/>
   <h1>Olá!</h1>
 </template>
 

@@ -12,19 +12,14 @@
       <span>Catálogo</span>
     </v-btn>
 
-    <v-btn to="/pedidos" value="pedidos" v-if="userData.user.tipo.key === 'cliente'">
+    <v-btn to="/compras" value="compras" v-if="userData.user.tipo.key === 'cliente'">
+      <v-icon>mdi-eye-outline</v-icon>
+      <span>Compras</span>
+    </v-btn>
+
+    <v-btn to="/pedidos" value="pedidos" v-if="['gerente', 'editor'].includes(userData.user.tipo.key)">
       <v-icon>mdi-truck-outline</v-icon>
       <span>Pedidos</span>
-    </v-btn>
-
-    <v-btn to="/vendas" value="vendas" v-if="userData.user.tipo.key === 'vendedor'">
-      <v-icon>mdi-truck-outline</v-icon>
-      <span>Vendas</span>
-    </v-btn>
-
-    <v-btn to="/relatorio" value="relatorio" v-if="userData.user.tipo.key === 'gerente'">
-      <v-icon>mdi-chart-timeline-variant-shimmer</v-icon>
-      <span>Relatório</span>
     </v-btn>
 
   </v-bottom-navigation>

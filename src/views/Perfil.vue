@@ -8,6 +8,7 @@
       </v-avatar>
     </div>
     <div class="mt-2 text-subtitle-1">{{user.nome}}</div>
+    <div class="mb-2 text-subtitle-1">{{user.tipo.titulo}}</div>
   </div>
 
   <v-list :items="items"></v-list>
@@ -16,7 +17,7 @@
 <script lang="ts" setup>
 import AppBar from '@/components/AppBar.vue'
 import { useUserStore } from '@/store/user';
-import { computed, ref } from "vue";
+import { computed } from "vue";
 
 const { user } = useUserStore();
 
@@ -42,72 +43,33 @@ const items = computed(() => {
 
   const obj = [
     {
-      title: 'Editar cadastro',
-      value: '/editar',
-      props: {
-        appendIcon: 'mdi-chevron-right',
-      }
+      title: 'Editar Perfil',
+      value: '/editar'
     }
   ];
 
   if( userTipo === 'cliente') {
     obj.push({
-      title: 'Histórico de Pedidos',
-      value: '/pedidos',
-      props: {
-        appendIcon: 'mdi-chevron-right',
-      }
+      title: 'Histórico de Compras',
+      value: '/compras'
     });
-    obj.push({
-      title: 'Suporte',
-      value: '/suporte',
-      props: {
-        appendIcon: 'mdi-chevron-right',
-      }
-    })
-  }
-
-  if( userTipo === 'vendedor') {
-    obj.push({
-      title: 'Histórico de Vendas',
-      value: '/vendas',
-      props: {
-        appendIcon: 'mdi-chevron-right',
-      }
-    })
   }
 
   if( userTipo === 'gerente') {
     obj.push({
-      title: 'Gerenciar vendedores',
-      value: '/users',
-      props: {
-        appendIcon: 'mdi-chevron-right',
-      }
+      title: 'Gerenciar Usuários',
+      value: '/users'
     })
   }
 
   [
     {
       title: 'Mudar Senha',
-      value: '/mudar-senha',
-      props: {
-        appendIcon: 'mdi-chevron-right'
-      }
-    },
-    {
-      title: 'Privacidade e Segurança',
-      value: '/privacidade',
-      props: {
-        appendIcon: 'mdi-chevron-right'
-      }
+      value: '/mudar-senha'
     },
     {
       title: 'Sair',
-      value: '/sair',
-      props: {
-        appendIcon: 'mdi-logout',
-      }
+      value: '/sair'
     }
   ].forEach( item => {
     obj.push(item)

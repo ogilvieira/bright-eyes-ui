@@ -1,12 +1,21 @@
 // Composables
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAppStore } from '@/store/app';
+import { useUserStore } from '@/store/user';
+
+type RouteMetaType = {
+  userTypeAccess?: boolean,
+  userTypesAccess?: string[]
+}
 
 const routes = [
   {
     path: '/',
+    redirect: { path: "/perfil" },
     component: () => import('@/layouts/default/Default.vue'),
-    meta: { requiresAuth: true },
+    meta: {
+      requiresAuth: true
+    } as RouteMetaType,
     children: [
       {
         path: '/perfil',
@@ -21,12 +30,14 @@ const routes = [
       {
         path: '/pedidos',
         name: 'Pedidos',
+        meta: { userTypesAccess: ['gerente', 'editor'] } as RouteMetaType,
         component: () => import('@/views/Pedidos.vue'),
       },
       {
-        path: '/vendas',
-        name: 'Vendas',
-        component: () => import('@/views/Vendas.vue'),
+        path: '/compras',
+        name: 'Compras',
+        meta: { userTypesAccess: ['cliente'] } as RouteMetaType,
+        component: () => import('@/views/Compras.vue'),
       }
     ],
   },
@@ -62,6 +73,23 @@ router.beforeEach((to, from, next) => {
       path: '/'
     });
   }
+
+  if(to.meta.userTypesAccess){
+    const userData = useUserStore();
+
+    if(!userData.user) {
+      return next({
+        path: '/perfil'
+      });
+    }
+
+    if(!(to.meta.userTypesAccess || []).includes(userData.user.tipo.key) ) {
+      return next({
+        path: '/perfil'
+      });
+    }
+  }
+
 
   if (to.meta.requiresAuth && !store.isAuthenticated) {
     return next({

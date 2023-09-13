@@ -8,7 +8,7 @@ export type userType = {
   sobrenome: string;
   tipo: {
       id: number;
-      key: "gerente" | "cliente" | "vendedor",
+      key: "gerente" | "cliente" | "editor",
       titulo: string
   }
 };
