@@ -4,7 +4,7 @@ import { useAppStore } from '@/store/app';
 import { useUserStore } from '@/store/user';
 
 type RouteMetaType = {
-  userTypeAccess?: boolean,
+  requiresAuth?: boolean,
   userTypesAccess?: string[]
 }
 
@@ -83,6 +83,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const store = useAppStore();
+  const meta: RouteMetaType = to.meta;
 
   if(store.isAuthenticated && to.meta.onlyWithoutAuth) {
     return next({
@@ -90,7 +91,7 @@ router.beforeEach((to, from, next) => {
     });
   }
 
-  if(to.meta.userTypesAccess){
+  if(meta.userTypesAccess){
     const userData = useUserStore();
 
     if(!userData.user) {
@@ -99,7 +100,7 @@ router.beforeEach((to, from, next) => {
       });
     }
 
-    if(!(to.meta.userTypesAccess || []).includes(userData.user.tipo.key) ) {
+    if(!(meta.userTypesAccess || []).includes(userData.user.tipo.key) ) {
       return next({
         path: '/perfil'
       });
@@ -107,7 +108,7 @@ router.beforeEach((to, from, next) => {
   }
 
 
-  if (to.meta.requiresAuth && !store.isAuthenticated) {
+  if (meta.requiresAuth && !store.isAuthenticated) {
     return next({
       path: '/login',
       query: { redirect: to.fullPath }
