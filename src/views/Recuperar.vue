@@ -13,6 +13,7 @@
         color="secondary"
         type="input"
         v-model="email"
+        :disabled="isSuccess"
       >
         <template v-slot:prepend-inner>
           <v-icon
@@ -20,6 +21,9 @@
           />
         </template>
       </v-text-field>
+      <div v-if="message" class="mb-2">
+        <v-alert :text="message" :color="messageType" variant="tonal"></v-alert>
+      </div>
       <div class="pb-6">
         <router-link to="/login" class="text-secondary">
           <div class="text-subtitle-2">
@@ -27,12 +31,14 @@
           </div>
         </router-link>
       </div>
-      <div v-if="message">
-        <v-alert :text="message" :color="messageType" variant="tonal"></v-alert>
-      </div>
-      <div class="pt-6">
+      <div class="pt-6" v-if="!isSuccess">
         <v-btn type="submit" :disabled="isLoading" block color="primary" rounded elevation="0" size="large">
           Recuperar
+        </v-btn>
+      </div>
+      <div class="pt-6" v-if="!isSuccess">
+        <v-btn type="button" to="/login" :disabled="isLoading" block variant="outlined" color="primary" rounded elevation="0" size="large">
+          Cancelar
         </v-btn>
       </div>
     </form>
@@ -51,9 +57,7 @@
   }
 
   type recoverAxiosType = {
-    data: {
-      message: string;
-    }
+    message: string;
   }
 
 
@@ -61,6 +65,7 @@
   const email = ref('');
   const message = ref('');
   const messageType = ref('error');
+  const isSuccess = ref(false);
 
   const handleSubmit = () => {
     if(!validator.isEmail(email.value)){
@@ -74,9 +79,9 @@
     Api().post<recoverAxiosTypeError, recoverAxiosType>('/account/recuperar', {
       email: email.value
     }).then(res => {
-      console.info(res);
       messageType.value = 'success';
-      message.value = res?.data?.message;
+      message.value = res?.message ?? 'Recuperação de senha realizada com sucesso. Verifique seu e-mail.';
+      isSuccess.value = true;
     }).catch(err => {
       console.error(err);
       messageType.value = 'error';

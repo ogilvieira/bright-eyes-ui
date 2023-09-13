@@ -33,6 +33,9 @@ export const useUserStore = defineStore('user', {
       } catch (err) {
         console.error(err);
       }
+    },
+    clear() {
+      this.user = null;
     }
   },
   persist: {

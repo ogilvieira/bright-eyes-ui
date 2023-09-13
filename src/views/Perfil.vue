@@ -7,11 +7,22 @@
         <span class="text-h3">{{initials}}</span>
       </v-avatar>
     </div>
-    <div class="mt-2 text-subtitle-1">{{user.nome}}</div>
-    <div class="mb-2 text-subtitle-1">{{user.tipo.titulo}}</div>
+    <div class="mt-2 mb-0 text-h6">{{user.nome}}</div>
+    <div class="mb-2 text-body-2">{{user.tipo.titulo}}</div>
   </div>
 
-  <v-list :items="items"></v-list>
+  <v-list lines="one">
+    <v-divider></v-divider>
+    <div v-for="(item, n) in items" :key="n">
+      <v-list-item
+        :link="true"
+        :to="item.to"
+        :title="item.title"
+      ></v-list-item>
+      <v-divider></v-divider>
+    </div>
+  </v-list>
+
 </template>
 
 <script lang="ts" setup>
@@ -44,32 +55,32 @@ const items = computed(() => {
   const obj = [
     {
       title: 'Editar Perfil',
-      value: '/editar'
+      to: '/editar'
     }
   ];
 
   if( userTipo === 'cliente') {
     obj.push({
       title: 'Histórico de Compras',
-      value: '/compras'
+      to: '/compras'
     });
   }
 
   if( userTipo === 'gerente') {
     obj.push({
       title: 'Gerenciar Usuários',
-      value: '/users'
+      to: '/users'
     })
   }
 
   [
     {
       title: 'Mudar Senha',
-      value: '/mudar-senha'
+      to: '/mudar-senha'
     },
     {
       title: 'Sair',
-      value: '/sair'
+      to: '/logout'
     }
   ].forEach( item => {
     obj.push(item)

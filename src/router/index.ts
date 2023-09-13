@@ -12,7 +12,7 @@ const routes = [
   {
     path: '/',
     redirect: { path: "/perfil" },
-    component: () => import('@/layouts/default/Default.vue'),
+    component: () => import('@/layouts/default/Dashboard.vue'),
     meta: {
       requiresAuth: true
     } as RouteMetaType,
@@ -52,12 +52,28 @@ const routes = [
         component: () => import('@/views/Login.vue'),
       },
       {
-        path: 'recuperar',
+        path: '/recuperar',
         name: 'Recuperar Senha',
         component: () => import('@/views/Recuperar.vue'),
-      },
+      }
     ],
   },
+  {
+    path: '/cadastro',
+    name: 'Cadastro',
+    meta: { onlyWithoutAuth: true },
+    component: () => import('@/layouts/default/Default.vue'),
+    children: [
+      {
+        path: '',
+        component: () => import('@/views/Cadastro.vue')
+      }
+    ]
+  },
+  {
+    path: '/logout',
+    component: () => import("@/views/Logout.vue")
+  }
 ]
 
 const router = createRouter({

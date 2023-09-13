@@ -22,18 +22,18 @@
         placeholder="Senha"
         variant="outlined"
         color="secondary"
-        type="input"
+        type="password"
         v-model="password"
       >
         <template v-slot:prepend-inner>
           <v-icon
-            icon="mdi-email-outline"
+            icon="mdi-lock-outline"
           />
         </template>
       </v-text-field>
 
       <div class="pb-6">
-        <router-link to="/login/recuperar" class="text-secondary">
+        <router-link to="/recuperar" class="text-secondary">
           <div class="text-subtitle-2">Recuperar senha?</div>
         </router-link>
       </div>
@@ -45,6 +45,12 @@
           Login
         </v-btn>
       </div>
+      <div class="pt-6">
+        <v-btn type="button" to="/cadastro" :disabled="isLoading" block variant="outlined" color="primary" rounded elevation="0" size="large">
+          Cadastro
+        </v-btn>
+      </div>
+
 
     </form>
   </div>
@@ -57,8 +63,11 @@
   import validator from "validator";
   import { useAppStore } from '@/store/app';
   import { useRouter } from "vue-router";
+  import { useUserStore } from "@/store/user";
   const router = useRouter()
   const appStore = useAppStore();
+  const userStore = useUserStore();
+
 
   type recoverAxiosTypeError = {
     data: {
@@ -76,7 +85,7 @@
   const message = ref('');
   const messageType = ref('error');
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
 
     if(!validator.isEmail(email.value)){
       messageType.value = 'error';
@@ -92,24 +101,25 @@
 
     message.value = '';
     isLoading.value = true;
-    Api().post<recoverAxiosTypeError, recoverAxiosType>('/account/oauth', {
-      email: email.value,
-      senha: password.value
-    }).then(res => {
+
+    try {
+      const res = await Api().post<recoverAxiosTypeError, recoverAxiosType>('/account/oauth', {
+        email: email.value,
+        senha: password.value
+      });
+
       messageType.value = 'success';
       message.value = "Login realizado com sucesso...";
       appStore.setToken(res?.token || '');
+      await userStore.init();
 
       setTimeout(() => {
         router.push('/');
       }, 1000);
 
-    }).catch(err => {
-      console.error(err);
+    } catch (err: any) {
       messageType.value = 'error';
-      message.value = err?.message;
-    }).then(() => {
-      isLoading.value = false;
-    })
+      message.value = err.message ?? 'Erro ao tentar realizar o login.';
+    }
   };
 </script>

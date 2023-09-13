@@ -2,27 +2,41 @@
   <v-app-bar
     elevation="0"
   >
-    <template v-slot:prepend>
-      <v-app-bar-nav-icon v-if="showBackButton" class="text-secondary"></v-app-bar-nav-icon>
-    </template>
-
-    <v-spacer />
-    <v-app-bar-title class="d-flex justify-center ml-0">{{props.title}}</v-app-bar-title>
-    <v-spacer />
-    <template v-slot:append>
-    </template>
+    <div class="d-flex justify-space-between w-100 align-center">
+      <div v-if="backButton">
+        <v-btn :ripple="false" @click="handleBackButton()" icon="mdi-chevron-left"></v-btn>
+      </div>
+      <div class="w-100">
+        <v-app-bar-title class="d-flex justify-center ml-0 w-100 text-h6">{{props.title}}</v-app-bar-title>
+      </div>
+      <div v-if="backButton" style="width: 48px;">
+      </div>
+    </div>
   </v-app-bar>
 </template>
 
 <script lang="ts" setup>
+  import { useRouter } from 'vue-router';
+  const router = useRouter();
+
   export interface Props {
     title: string;
-    showBackButton?: boolean;
+    backButton?: string | boolean;
   }
 
   const props = withDefaults(defineProps<Props>(), {
     title: '',
-    showBackButton: false
+    backButton: false
   });
+
+  const handleBackButton = () => {
+
+    if( typeof props.backButton === 'boolean' ) {
+      router.go(-1);
+    } else {
+      router.replace({ path: props.backButton })
+    }
+
+  }
 
 </script>
