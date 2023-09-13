@@ -5,30 +5,36 @@
       title="Cadastro"
     />
 
-    <div>
-      <v-form @submit.prevent="handleSubmit">
+    <div v-if="stage === 'form'">
+      <v-form @submit.prevent="handleSubmit" v-model="isFormValid">
         <div v-for="(field, fieldIndex) in fields" :key="fieldIndex">
           <v-row>
-            <v-text-field
-              :placeholder="field.label"
-              variant="outlined"
-              color="secondary"
-              type="input"
-              :rules="field?.rules ?? []"
-              v-model="form[field.key]"
-            />
+            <v-col>
+              <v-text-field
+                :placeholder="field.label"
+                variant="outlined"
+                color="secondary"
+                :type="field.type ?? 'input'"
+                :rules="field?.rules ?? []"
+                v-model="form[field.key]"
+                hide-details="auto"
+              />
+            </v-col>
           </v-row>
         </div>
 
-        <div v-if="message">
+        <div v-if="message" class="pt-6">
           <v-alert :text="message" :color="messageType" variant="tonal"></v-alert>
         </div>
         <div class="pt-6">
-          <v-btn type="submit" :disabled="isLoading" block color="primary" rounded elevation="0" size="large">
+          <v-btn type="submit" :disabled="!isFormValid" :loading="isLoading" block color="primary" rounded elevation="0" size="large">
             Finalizar Cadastro
           </v-btn>
         </div>
       </v-form>
+    </div>
+    <div v-if="stage === 'success'">
+      Sucesso!
     </div>
   </v-container>
 </template>
@@ -54,11 +60,14 @@
   type FieldType = {
     key: string;
     label: string;
-    rules?: any[]
+    rules?: any[],
+    type?: string
   }
 
 
   const isLoading = ref(false);
+  const isFormValid = ref(false);
+  const stage = ref('form');
 
   const form = ref({
     nome: '',
@@ -70,44 +79,99 @@
     senharepete: ''
   });
 
+  const message = ref('');
+  const messageType = ref('error');
+
   const fields = ref<FieldType[]>([
     {
       key: 'nome',
       label: 'Nome',
       rules: [
-        value => (!validator.isEmpty(value) || 'É requerido'),
-        value => (!validator.contains(value, ' ') || 'Não póde contêr espaços')
+        value => (validator.isLength(value, { min: 3 }) || 'Nome inválido.'),
+        value => (!validator.contains(value, ' ') || 'Não pode conter espaços.'),
+        value => (validator.isAlpha(value) || 'Não pode conter números.' )
       ]
     },
     {
       key: 'sobrenome',
-      label: 'Sobrenome'
+      label: 'Sobrenome',
+      rules: [
+        value => (validator.isLength(value, { min: 3 }) || 'Sobrenome inválido.'),
+        value => (validator.isAlpha(value) || 'Não pode conter números.' )
+      ]
     },
     {
       key: 'nascimento',
-      label: 'Nascimento'
+      label: 'Nascimento',
+      type: 'date',
+      rules: [
+        value => !isNaN(Date.parse(value)) || 'Data inválida.'
+      ]
+    },
+    {
+      key: 'cpf',
+      label: 'CPF',
+      type: '',
+      rules: [
+        value => !isNaN(Date.parse(value)) || 'Data inválida.'
+      ]
+    },
+    {
+      key: 'email',
+      label: 'E-mail',
+      rules: [
+        value => validator.isEmail(value) || 'E-mail inválido.'
+      ]
     },
     {
       key: 'telefone',
-      label: 'Telefone'
+      label: 'Telefone',
+      type: 'phone',
+      rules: [
+        value => (validator.isMobilePhone(value, "pt-BR") || 'Telefone inválido.'),
+      ]
     },
     {
       key: 'senha',
-      label: 'Senha'
+      label: 'Senha',
+      type: 'password',
+      rules: [
+        value => validator.isLength(value, { min: 6 }) || 'Senha precisa ter 6 digitos.'
+      ]
     },
     {
       key: 'senharepete',
-      label: 'Repetir Senha'
+      label: 'Repetir Senha',
+      type: 'password',
+      rules: [
+        value => (value === form.value.senha) || "As senhas precisam ser idênticas."
+      ]
     }
   ])
 
-  const message = ref('');
-  const messageType = ref('error');
+  const handleSubmit = async () => {
+    if(!isFormValid.value){ return; }
+    isLoading.value = true;
 
+    try {
+      const res = await Api().post<recoverAxiosTypeError, recoverAxiosType>('/account/register', {
+        nome: form.value.nome,
+        sobrenome: form.value.sobrenome,
+        nascimento: new Date(form.value.nascimento).toISOString().slice(0, 10),
+        email: form.value.email,
+        telefone: form.value.telefone,
+        senha: form.value.senha
+      });
 
-
-  const handleSubmit = () => {
-    console.info(form.value)
+      messageType.value = 'success';
+      message.value = res?.data?.message || "Cadastro realizado com sucesso!";
+      stage.value='success';
+    } catch (err: any) {
+      console.error(err);
+      messageType.value = 'error';
+      message.value = err.message ?? 'Erro ao tentar realizar o cadastro.';
+    }
+    isLoading.value = false;
 
   };
 

@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build",
+    "build": "rm -rf tsconfig.tsbuildinfo && vue-tsc --noEmit && vite build",
     "preview": "vite preview",
     "host": "vite --host",
     "host:prod": "node server-spa.js",

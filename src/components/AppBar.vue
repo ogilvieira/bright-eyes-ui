@@ -2,7 +2,7 @@
   <v-app-bar
     elevation="0"
   >
-    <div class="d-flex justify-space-between w-100 align-center">
+    <div class="d-flex justify-space-between w-100 align-center mx-auto my-0" style="max-width: 560px;">
       <div v-if="backButton">
         <v-btn :ripple="false" @click="handleBackButton()" icon="mdi-chevron-left"></v-btn>
       </div>

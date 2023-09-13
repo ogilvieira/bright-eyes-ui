@@ -6,21 +6,28 @@
     </div>
   </div>
   <div>
-    <form @submit.prevent="handleSubmit">
-      <v-text-field
-        placeholder="digite seu e-mail"
-        variant="outlined"
-        color="secondary"
-        type="input"
-        v-model="email"
-        :disabled="isSuccess"
-      >
-        <template v-slot:prepend-inner>
-          <v-icon
-            icon="mdi-email-outline"
-          />
-        </template>
-      </v-text-field>
+    <v-form @submit.prevent="handleSubmit" v-model="isFormValid">
+      <v-row>
+        <v-col>
+          <v-text-field
+            placeholder="digite seu e-mail"
+            variant="outlined"
+            color="secondary"
+            type="input"
+            v-model="email"
+            :rules="[value => validator.isEmail(value) || 'E-mail inválido.']"
+            :disabled="isSuccess"
+            hide-details="auto"
+          >
+            <template v-slot:prepend-inner>
+              <v-icon
+                icon="mdi-email-outline"
+              />
+            </template>
+          </v-text-field>
+        </v-col>
+      </v-row>
+
       <div v-if="message" class="mb-2">
         <v-alert :text="message" :color="messageType" variant="tonal"></v-alert>
       </div>
@@ -32,7 +39,7 @@
         </router-link>
       </div>
       <div class="pt-6" v-if="!isSuccess">
-        <v-btn type="submit" :disabled="isLoading" block color="primary" rounded elevation="0" size="large">
+        <v-btn type="submit" :disabled="!isFormValid" :loading="isLoading" block color="primary" rounded elevation="0" size="large">
           Recuperar
         </v-btn>
       </div>
@@ -41,7 +48,7 @@
           Cancelar
         </v-btn>
       </div>
-    </form>
+    </v-form>
   </div>
 </template>
 
@@ -66,6 +73,7 @@
   const message = ref('');
   const messageType = ref('error');
   const isSuccess = ref(false);
+  const isFormValid = ref(false);
 
   const handleSubmit = () => {
     if(!validator.isEmail(email.value)){

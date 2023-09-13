@@ -12,3 +12,9 @@ $root-font-family: "Inter", sans-serif !important;
 @use 'vuetify/settings' with (
   $body-font-family: $root-font-family
 );
+
+.v-main {
+  margin: 0 auto;
+  max-width: 560px;
+  width: 100%;
+}

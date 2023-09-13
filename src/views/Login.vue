@@ -3,35 +3,45 @@
     <div class="text-subtitle-2 pb-4">Nosso Cliente?</div>
   </div>
   <div>
-    <form @submit.prevent="handleSubmit">
-      <v-text-field
-        placeholder="Usuário"
-        variant="outlined"
-        color="secondary"
-        type="input"
-        v-model="email"
-      >
-        <template v-slot:prepend-inner>
-          <v-icon
-            icon="mdi-email-outline"
-          />
-        </template>
-      </v-text-field>
-
-      <v-text-field
-        placeholder="Senha"
-        variant="outlined"
-        color="secondary"
-        type="password"
-        v-model="password"
-      >
-        <template v-slot:prepend-inner>
-          <v-icon
-            icon="mdi-lock-outline"
-          />
-        </template>
-      </v-text-field>
-
+    <v-form @submit.prevent="handleSubmit" v-model="isFormValid">
+      <v-row>
+        <v-col>
+          <v-text-field
+            placeholder="Usuário"
+            variant="outlined"
+            color="secondary"
+            type="input"
+            :rules="[value => validator.isEmail(value) || 'E-mail inválido.']"
+            v-model="email"
+            hide-details="auto"
+          >
+            <template v-slot:prepend-inner>
+              <v-icon
+                icon="mdi-email-outline"
+              />
+            </template>
+          </v-text-field>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+          <v-text-field
+            placeholder="Senha"
+            variant="outlined"
+            color="secondary"
+            type="password"
+            :rules="[value => validator.isLength(value, { min: 6 }) || 'Senha inválida.']"
+            v-model="password"
+            hide-details="auto"
+          >
+            <template v-slot:prepend-inner>
+              <v-icon
+                icon="mdi-lock-outline"
+              />
+            </template>
+          </v-text-field>
+        </v-col>
+      </v-row>
       <div class="pb-6">
         <router-link to="/recuperar" class="text-secondary">
           <div class="text-subtitle-2">Recuperar senha?</div>
@@ -41,7 +51,7 @@
         <v-alert :text="message" variant="tonal" :color="messageType"></v-alert>
       </div>
       <div class="pt-6">
-        <v-btn type="submit" :disabled="isLoading" block color="primary" rounded elevation="0" size="large">
+        <v-btn type="submit" :disabled="!isFormValid" :loading="isLoading" block color="primary" rounded elevation="0" size="large">
           Login
         </v-btn>
       </div>
@@ -52,7 +62,7 @@
       </div>
 
 
-    </form>
+    </v-form>
   </div>
 
 </template>
@@ -84,20 +94,10 @@
   const password = ref('');
   const message = ref('');
   const messageType = ref('error');
+  const isFormValid = ref(false);
 
   const handleSubmit = async () => {
-
-    if(!validator.isEmail(email.value)){
-      messageType.value = 'error';
-      message.value = "E-mail inválido.";
-      return;
-    }
-
-    if(!validator.isLength(password.value, { min: 6, max: undefined })){
-      messageType.value = 'error';
-      message.value = "Senha inválida.";
-      return;
-    }
+    if(!isFormValid.value){ return; }
 
     message.value = '';
     isLoading.value = true;
