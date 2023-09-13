@@ -5,6 +5,8 @@ services:
     build: .
     command: yarn host:prod
     environment:
-      PORT: ${PORT}
+      PORT: 80
     volumes:
       - .:/app/
+    ports:
+      - "3000:80"
