@@ -56,19 +56,6 @@ type FieldType = {
   mask?: string
 }
 
-
-type recoverAxiosTypeError = {
-  data: {
-    message?: string;
-  }
-}
-
-type recoverAxiosType = {
-  data: {
-    message: string;
-  }
-}
-
 const isLoading = ref(false);
 const isFormValid = ref(false);
 

@@ -10,11 +10,16 @@ $root-font-family: "Inter", sans-serif !important;
 
 // https://vuetifyjs.com/features/sass-variables/`
 @use 'vuetify/settings' with (
-  $body-font-family: $root-font-family
+  $body-font-family: $root-font-family,
+  $card-border-color: 'red'
 );
 
 .v-main {
   margin: 0 auto;
   max-width: 560px;
   width: 100%;
+}
+
+.v-card--variant-outlined {
+  border: thin solid #ccc;
 }

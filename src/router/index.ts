@@ -38,6 +38,11 @@ const routes = [
         component: () => import('@/views/Catalogo.vue'),
       },
       {
+        path: '/catalogo/:id',
+        name: 'Detalhe do Produto',
+        component: () => import('@/views/ProdutoDetalhe.vue'),
+      },
+      {
         path: '/pedidos',
         name: 'Pedidos',
         meta: { userTypesAccess: ['gerente', 'editor'] } as RouteMetaType,
@@ -70,12 +75,13 @@ const routes = [
   },
   {
     path: '/cadastro',
-    name: 'Cadastro',
+    name: 'Cadastro Wrap',
     meta: { onlyWithoutAuth: true },
     component: () => import('@/layouts/default/Default.vue'),
     children: [
       {
         path: '',
+        name: 'Cadastro',
         component: () => import('@/views/Cadastro.vue')
       }
     ]

@@ -20,7 +20,7 @@
   const router = useRouter();
 
   export interface Props {
-    title: string;
+    title?: string;
     backButton?: string | boolean;
   }
 
