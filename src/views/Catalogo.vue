@@ -71,7 +71,7 @@
   const showEditOption = ref(['gerente', 'editor'].includes(userStore.user?.tipo?.key ?? ''));
   const terms = ref('');
   const timeoutSearch = ref(null);
-  const produtos = ref([]);
+  const produtos = ref<IProduto[]>([]);
   const marker = ref(null);
   const isLoading = ref(false);
   const page = ref(1);
@@ -95,6 +95,15 @@
     await fetchProducts(1);
   }
 
+  interface IProduto {
+    id: number;
+    name: string;
+    fabricante: string;
+    preco: string | number;
+    imagem: string;
+    descricao: string;
+  }
+
   const fetchProducts = async (localPage: number = 1, terms: string | null = null) => {
     if( isLoading.value || (localPage !== 1 && !canPaginate.value)) { return; }
 
@@ -105,12 +114,12 @@
           page: localPage,
           terms
         }
-      } as { [key: string]: any });
+      });
 
       if( localPage === 1 ) {
-        produtos.value = res.produtos as {[key: string]: any}[] || [];
+        produtos.value = res.produtos || [];
       } else if ( res.produtos && res.produtos.length ) {
-        produtos.value = [].concat(produtos.value, res.produtos);
+        produtos.value = [...produtos.value, ...res.produtos];
       }
 
       canPaginate.value = res.produtos.length === 10;

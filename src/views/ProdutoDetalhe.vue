@@ -12,7 +12,7 @@
 
     <div>{{ produtoData.name }}</div>
     <div>{{ produtoData.fabricante }}</div>
-    <div>{{ produtoData.price }}</div>
+    <div>{{ produtoData.preco }}</div>
     <div>
       <v-btn to="/login" block color="primary" rounded elevation="0" size="large" append-icon="mdi-arrow-right">
         COMPRAR AGORA
@@ -35,11 +35,19 @@
   import Api from '@/services/api';
   const route = useRoute();
 
-  const produtoData = ref(null);
+  interface IProduto {
+    name: string;
+    fabricante: string;
+    preco: string | number;
+    imagem: string;
+    descricao: string;
+  }
+
+  const produtoData = ref<IProduto>();
 
   const fetchProduct = async () => {
     const { id } = route.params;
-    const res = await Api().get<any,any>(`/produto/${id}`);
+    const res = await Api().get<IProduto,any>(`/produto/${id}`);
     produtoData.value = res;
   }
 
