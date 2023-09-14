@@ -34,6 +34,16 @@ export const useUserStore = defineStore('user', {
         console.error(err);
       }
     },
+    async renew() {
+      try {
+      const user = await api({ requiresAuth: true }).get<any, userType>("/account/me");
+        if( user ) {
+          this.user = user;
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    },
     clear() {
       this.user = null;
     }

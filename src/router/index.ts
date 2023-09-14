@@ -23,6 +23,16 @@ const routes = [
         component: () => import('@/views/Perfil.vue'),
       },
       {
+        path: '/editar-perfil',
+        name: 'Editar Perfil',
+        component: () => import('@/views/EditarPerfil.vue'),
+      },
+      {
+        path: '/mudar-senha',
+        name: 'Mudar Senha',
+        component: () => import('@/views/MudarSenha.vue'),
+      },
+      {
         path: '/catalogo',
         name: 'Catálogo',
         component: () => import('@/views/Catalogo.vue'),

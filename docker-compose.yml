@@ -5,9 +5,9 @@ services:
     build: .
     command: yarn host:prod
     environment:
-      PORT: 80
-      API_URL: ${API_URL}
+      PORT: 3000
+      API_URL: "API_URL"
     volumes:
       - .:/app/
     ports:
-      - "3000:80"
+      - "3000:3000"

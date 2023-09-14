@@ -1,11 +1,10 @@
 <template>
-  <v-container fluid>
-    <app-bar
-      backButton="/login"
-      title="Cadastro"
-    />
-
-    <div v-if="stage === 'form'">
+  <app-bar
+    backButton="/login"
+    title="Cadastro"
+  />
+  <v-container fluid class="align-center justify-center d-flex flex-wrap" style="min-height: calc((100% - 64px) - 0px)">
+    <div class="w-100" v-if="stage === 'form'">
       <v-form @submit.prevent="handleSubmit" v-model="isFormValid">
         <div v-for="(field, fieldIndex) in fields" :key="fieldIndex">
           <v-row>
@@ -18,6 +17,7 @@
                 :rules="field?.rules ?? []"
                 v-model="form[field.key]"
                 hide-details="auto"
+                autocomplete="off"
               />
             </v-col>
           </v-row>
@@ -33,8 +33,18 @@
         </div>
       </v-form>
     </div>
-    <div v-if="stage === 'success'">
-      Sucesso!
+    <div v-if="stage === 'success'" v-maska>
+
+      <div class="text-center">
+        <div class="text-h6 font-weight-medium text-primary">CADASTRO REALIZADO!</div>
+        <div class="pt-2 text-body">Agora você já pode realizar o login.</div>
+        <div class="pt-10">
+          <v-btn to="/login" block color="primary" rounded elevation="0" size="large">
+            LOGIN
+          </v-btn>
+        </div>
+      </div>
+
     </div>
   </v-container>
 </template>
@@ -44,6 +54,7 @@
   import validator from "validator";
   import AppBar from '@/components/AppBar.vue'
   import Api from "@/services/api";
+  import validatorBrazil from "validator-brazil";
 
   type recoverAxiosTypeError = {
     data: {
@@ -61,7 +72,8 @@
     key: string;
     label: string;
     rules?: any[],
-    type?: string
+    type?: string,
+    mask?: string
   }
 
 
@@ -73,6 +85,7 @@
     nome: '',
     sobrenome: '',
     nascimento: '',
+    cpf: '',
     email: '',
     telefone: '',
     senha: '',
@@ -89,7 +102,7 @@
       rules: [
         value => (validator.isLength(value, { min: 3 }) || 'Nome inválido.'),
         value => (!validator.contains(value, ' ') || 'Não pode conter espaços.'),
-        value => (validator.isAlpha(value) || 'Não pode conter números.' )
+        value => (/^\D+$/.test(value)) || 'Não pode conter números.'
       ]
     },
     {
@@ -97,7 +110,7 @@
       label: 'Sobrenome',
       rules: [
         value => (validator.isLength(value, { min: 3 }) || 'Sobrenome inválido.'),
-        value => (validator.isAlpha(value) || 'Não pode conter números.' )
+        value => (/^\D+$/.test(value)) || 'Não pode conter números.'
       ]
     },
     {
@@ -111,10 +124,11 @@
     {
       key: 'cpf',
       label: 'CPF',
-      type: '',
+      type: 'phone',
       rules: [
-        value => !isNaN(Date.parse(value)) || 'Data inválida.'
-      ]
+        value => validatorBrazil.isCpf(value) || 'CPF inválido.'
+      ],
+      mask: "###.###.###-##"
     },
     {
       key: 'email',
@@ -152,11 +166,13 @@
   const handleSubmit = async () => {
     if(!isFormValid.value){ return; }
     isLoading.value = true;
+    message.value = '';
 
     try {
-      const res = await Api().post<recoverAxiosTypeError, recoverAxiosType>('/account/register', {
+      const res = await Api({ requiresAuth: true }).post<recoverAxiosTypeError, recoverAxiosType>('/account/register', {
         nome: form.value.nome,
         sobrenome: form.value.sobrenome,
+        cpf: form.value.cpf,
         nascimento: new Date(form.value.nascimento).toISOString().slice(0, 10),
         email: form.value.email,
         telefone: form.value.telefone,

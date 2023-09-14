@@ -119,7 +119,8 @@
 
     } catch (err: any) {
       messageType.value = 'error';
-      message.value = err.message ?? 'Erro ao tentar realizar o login.';
+      message.value = err?.message ?? 'Erro ao tentar realizar o login.';
+      isLoading.value = false;
     }
   };
 </script>

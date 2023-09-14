@@ -55,7 +55,7 @@ const items = computed(() => {
   const obj = [
     {
       title: 'Editar Perfil',
-      to: '/editar'
+      to: '/editar-perfil'
     }
   ];
 
