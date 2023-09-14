@@ -1,5 +1,5 @@
 <template>
-  <v-card flat link variant="outlined" :to="`/catalogo/${props.id}`" class="mb-2" border="'grey-lighten-5">
+  <v-card flat :link="!!(props.to)" variant="outlined" :to="props.to" class="mb-2">
     <v-card-text>
       <v-container fluid class="pa-0">
         <v-row>
@@ -27,10 +27,10 @@ import { computed } from 'vue';
 
 export interface Props {
   title: string;
-  id: number;
   photo: string;
   price: number | string;
   brand: string;
+  to?: string | undefined;
 }
 
 const props = withDefaults(defineProps<Props>(), {

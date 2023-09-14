@@ -57,6 +57,19 @@ const routes = [
     ],
   },
   {
+    path: '/comprar/:id',
+    name: 'ComprarProduto',
+    component: () => import('@/layouts/default/Default.vue'),
+    meta: { userTypesAccess: ['cliente'] } as RouteMetaType,
+    children: [
+      {
+        path: '',
+        name: 'ComprarProduto',
+        component: () => import('@/views/ProdutoComprar.vue'),
+      },
+    ]
+  },
+  {
     path: '/login',
     component: () => import('@/layouts/auth/Auth.vue'),
     meta: { onlyWithoutAuth: true },

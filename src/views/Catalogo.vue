@@ -42,6 +42,7 @@
             :price="produto.preco"
             :brand="produto.fabricante"
             :show-actions="showEditOption"
+            :to="`/catalogo/${produto.id}`"
           />
         </div>
         <div ref="marker"></div>

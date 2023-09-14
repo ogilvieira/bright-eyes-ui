@@ -33,7 +33,7 @@
         </div>
       </v-form>
     </div>
-    <div v-if="stage === 'success'" v-maska>
+    <div v-if="stage === 'success'">
 
       <div class="text-center">
         <div class="text-h6 font-weight-medium text-primary">CADASTRO REALIZADO!</div>
@@ -127,8 +127,7 @@
       type: 'phone',
       rules: [
         value => validatorBrazil.isCpf(value) || 'CPF inválido.'
-      ],
-      mask: "###.###.###-##"
+      ]
     },
     {
       key: 'email',
