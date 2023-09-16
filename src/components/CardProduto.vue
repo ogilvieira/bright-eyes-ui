@@ -34,7 +34,6 @@ export interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  title: '',
   id: 0,
   photo: '',
   price: 0,

@@ -4,11 +4,13 @@ module.exports = {
     node: true,
   },
   extends: [
-    'plugin:vue/vue3-essential',
+    'plugin:vue/vue3-recommended',
     'eslint:recommended',
-    '@vue/eslint-config-typescript',
+    "@vue/typescript/recommended"
   ],
+  parser: '@typescript-eslint/parser',
+  plugins: ['@typescript-eslint'],
   rules: {
     'vue/multi-word-component-names': 'off',
-  },
+  }
 }
