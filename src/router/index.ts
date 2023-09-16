@@ -61,6 +61,18 @@ const routes = [
         component: () => import('@/views/Pedidos.vue'),
       },
       {
+        path: '/pedidos/buscar',
+        name: 'PedidosBuscar',
+        meta: { userTypesAccess: ['gerente', 'editor'] } as RouteMetaType,
+        component: () => import('@/views/PedidosBuscar.vue'),
+      },
+      {
+        path: '/pedidos/detalhe/:id',
+        name: ' ',
+        meta: { userTypesAccess: ['gerente', 'editor'] } as RouteMetaType,
+        component: () => import('@/views/PedidoDetalhe.vue'),
+      },
+      {
         path: '/compras',
         name: 'Compras',
         meta: { userTypesAccess: ['cliente'] } as RouteMetaType,

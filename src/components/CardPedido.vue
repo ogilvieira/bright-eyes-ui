@@ -3,7 +3,7 @@
     <v-card-text>
       <v-container fluid class="pa-0">
         <v-row>
-          <v-col class="pa-0" cols="4">
+          <v-col v-if="props.photo" class="pa-0" cols="4">
             <v-img
               :width="126"
               aspect-ratio="1/1"
@@ -33,8 +33,8 @@ export interface Props {
   id: number;
   parcelas: number;
   photo: string;
-  createdAt: Date;
-  total: number;
+  createdAt: string | Date;
+  total: string | number;
   status?: string;
   to?: string | undefined;
 }
@@ -56,7 +56,7 @@ const priceFormated = computed(() => {
   return new Intl.NumberFormat('pt-BR', {
     style: 'currency',
     currency: 'BRL'
-  }).format(props.total / props.parcelas).replace(/^(\D+)/, '$1 ');
+  }).format((+props.total) / props.parcelas).replace(/^(\D+)/, '$1 ');
 })
 
 

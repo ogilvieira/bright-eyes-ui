@@ -1,7 +1,18 @@
 <template>
-  <app-bar title="Compras"/>
+  <app-bar
+    back-button="/pedidos"
+    title="Buscar Pedido"/>
 
   <v-container>
+
+    <v-row class="text-body-2 font-weight-medium">
+      <v-col>
+        <div v-if="query.terms">Buscando por “{{query.terms}}”</div>
+        <div v-if="query.status">Status: {{ statusFormated(query.status) }}</div>
+        <div v-if="query.data_inicial">Depois de:  {{ dayjs(''+query.data_inicial).format('DD/MM/YYYY') }}</div>
+        <div v-if="query.data_final">Antes de: {{ dayjs(''+query.data_final).format('DD/MM/YYYY') }}</div>
+      </v-col>
+    </v-row>
 
     <v-row v-if="(!compras || !compras.length) && !isLoading" style="height: 300px;" class="d-flex align-center">
       <v-col>
@@ -21,15 +32,21 @@
     <v-row v-if="compras && compras.length">
       <v-col>
         <div v-for="(compra, index) in compras" :key="index">
-          <card-pedido
-            :id="compra.id"
-            :parcelas="compra.parcelas"
-            :createdAt="compra.created_at"
-            :photo="compra.produto.imagem"
-            :total="compra.total"
-            :status="compra.status"
-            :to="`/compra/${compra.id}`"
-          />
+          <v-card flat :link="true" variant="outlined" :to="`/pedidos/detalhe/${compra.id}`" class="mb-2">
+            <v-card-text>
+              <v-container fluid class="pa-0">
+                <v-row>
+                  <div class="text-subtitle-1 font-weight-medium">#ID {{ compra.id }}</div>
+                </v-row>
+                <v-row>
+                  <div class="text-body-2 font-weight-medium mt-0 text-grey-lighten-1">{{ dayjs(compra.createdAt).format('DD/MM/YYYY HH:mm') }}</div>
+                </v-row>
+                <v-row>
+                  <span class="mr-2">Status:</span> <span class="text-secondary"> {{ statusFormated(compra.status) }}</span>
+                </v-row>
+              </v-container>
+            </v-card-text>
+          </v-card>
         </div>
         <div ref="marker"></div>
       </v-col>
@@ -45,8 +62,10 @@
   import AppBar from '@/components/AppBar.vue'
   import { ref, onMounted } from 'vue';
   import Api from '@/services/api';
-  import CardPedido from '@/components/CardPedido.vue';
   import { useEventListener } from '@vueuse/core'
+  import dayjs from 'dayjs';
+  import { useRoute } from 'vue-router';
+  const route = useRoute();
 
   interface IProduto {
     imagem: string;
@@ -54,7 +73,7 @@
 
   interface IPedido {
     id: number,
-    created_at: Date,
+    createdAt: Date,
     total: number,
     parcelas: number,
     produto: IProduto,
@@ -62,6 +81,7 @@
     status: "recebido" | "aguardando" | "enviado" | "cancelado"
   }
 
+  const query = ref(route.query);
   const compras = ref<IPedido[]>([]);
   const marker = ref(null);
   const isLoading = ref(false);
@@ -80,7 +100,8 @@
     try {
       const res = await Api({ requiresAuth: true }).get<any,any>('/pedidos', {
         params: {
-          page: localPage
+          page: localPage,
+          ...query.value
         }
       });
 
@@ -99,6 +120,16 @@
 
     isLoading.value = false;
   }
+
+  const statusFormated = (status) => {
+    return {
+      'recebido': "Recebido",
+      'aguardando': "Aguardando",
+      'cancelado': "Cancelado",
+      'enviado': "Enviado"
+    }[status ?? ''] ?? '';
+  };
+
 
   onMounted(async () => {
     await fetchPedidos(1);
