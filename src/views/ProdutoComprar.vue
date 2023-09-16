@@ -431,11 +431,10 @@
       idPedido.value = res.id;
       handleGoToStep(4);
       isFetchingOrder.value = false;
-      console.info(res);
     } catch (err: any) {
       errorMessage.value = err?.errorMessage || 'Erro ao tentar realizar o pedido.';
-      isFetchingOrder.value = false;
     }
+    isFetchingOrder.value = false;
   }
 
   onMounted(async () => {

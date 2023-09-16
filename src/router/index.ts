@@ -24,12 +24,12 @@ const routes = [
       },
       {
         path: '/editar-perfil',
-        name: 'Editar Perfil',
+        name: 'EditarPerfil',
         component: () => import('@/views/EditarPerfil.vue'),
       },
       {
         path: '/mudar-senha',
-        name: 'Mudar Senha',
+        name: 'MudarSenha',
         component: () => import('@/views/MudarSenha.vue'),
       },
       {
@@ -39,7 +39,7 @@ const routes = [
       },
       {
         path: '/catalogo/:id',
-        name: 'Detalhe do Produto',
+        name: 'ProdutoDetalhe',
         component: () => import('@/views/ProdutoDetalhe.vue'),
       },
       {
@@ -53,6 +53,12 @@ const routes = [
         name: 'Compras',
         meta: { userTypesAccess: ['cliente'] } as RouteMetaType,
         component: () => import('@/views/Compras.vue'),
+      },
+      {
+        path: '/compra/:id',
+        name: 'CompraDetalhe',
+        meta: { userTypesAccess: ['cliente'] } as RouteMetaType,
+        component: () => import('@/views/CompraDetalhe.vue'),
       }
     ],
   },

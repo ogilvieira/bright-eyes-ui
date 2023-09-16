@@ -28,7 +28,6 @@
             </div>
           </div>
         </div>
-        <div ref="marker"></div>
       </v-col>
     </v-row>
 
