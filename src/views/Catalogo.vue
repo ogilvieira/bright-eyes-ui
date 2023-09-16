@@ -11,8 +11,17 @@
           @keyup="handleSearch"
           @click:clear="handleSearch"
           v-model="terms"
+          hide-details="auto"
         >
         </v-text-field>
+      </v-col>
+    </v-row>
+
+    <v-row v-if="showEditOption">
+      <v-col>
+        <v-btn to="/catalogo/novo" variant="outlined" color="secondary" block rounded elevation="0" size="small" append-icon="mdi-arrow-right">
+          Cadastrar Novo
+        </v-btn>
       </v-col>
     </v-row>
 
@@ -63,12 +72,12 @@
   import { useRoute, useRouter } from 'vue-router';
   import { useEventListener } from '@vueuse/core'
 
-  const userStore = useUserStore();
+  const { user } = useUserStore();
   const route = useRoute();
   const router = useRouter();
 
 
-  const showEditOption = ref(['gerente', 'editor'].includes(userStore.user?.tipo?.key ?? ''));
+  const showEditOption = ref(['gerente', 'editor'].includes(user?.tipo?.key ?? ''));
   const terms = ref('');
   const timeoutSearch = ref(null);
   const produtos = ref<IProduto[]>([]);

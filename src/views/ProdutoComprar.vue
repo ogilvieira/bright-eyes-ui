@@ -196,17 +196,17 @@
   const errorMessage = ref('');
   const form = ref({
     anexo: [],
-    cep: '02611001',
-    logradouro: 'av parada pinto',
-    numero: '12',
+    cep: '',
+    logradouro: '',
+    numero: '',
     complemento: '',
-    bairro: 'VL NV CACHOEIRINHA',
-    cidade: 'São Paulo',
-    uf: 'SP',
-    cc_numero: '4304-1380-5478-7364',
-    cc_nome: 'Gil VIeira',
-    cc_data_expiracao: '02/30',
-    cc_cvv: '123',
+    bairro: '',
+    cidade: '',
+    uf: '',
+    cc_numero: '',
+    cc_nome: '',
+    cc_data_expiracao: '',
+    cc_cvv: '',
     parcelas: 1
   });
 

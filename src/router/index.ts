@@ -38,6 +38,18 @@ const routes = [
         component: () => import('@/views/Catalogo.vue'),
       },
       {
+        path: '/catalogo/novo',
+        name: 'ProdutoNovo',
+        meta: { userTypesAccess: ['gerente', 'editor'] } as RouteMetaType,
+        component: () => import('@/views/ProdutoNovo.vue'),
+      },
+      {
+        path: '/catalogo/:id/editar',
+        name: 'ProdutoEditar',
+        meta: { userTypesAccess: ['gerente', 'editor'] } as RouteMetaType,
+        component: () => import('@/views/ProdutoEditar.vue'),
+      },
+      {
         path: '/catalogo/:id',
         name: 'ProdutoDetalhe',
         component: () => import('@/views/ProdutoDetalhe.vue'),
