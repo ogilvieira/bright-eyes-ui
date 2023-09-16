@@ -57,6 +57,7 @@
             :value="modelValue[field.key]"
             v-model="modelValue[field.key]"
             counter="3000"
+            auto-grow
             hide-details="auto"
             autocomplete="off"
           />
@@ -80,9 +81,8 @@
       </v-btn>
     </div>
 
-    <div class="pt-3" v-if="isFormValid">
+    <div class="pt-3" v-if="isUpdate">
       <v-btn type="submit"
-        :loading="props.isLoading"
         block
         variant="outlined"
         @click="$emit('delete', form)"
@@ -98,7 +98,7 @@
 </template>
 <script setup lang="ts">
   import validator from 'validator';
-  import { ref, defineProps } from 'vue';
+  import { ref } from 'vue';
   import toBase64 from '@/utils/toBase64';
 
   const emit = defineEmits(['update:modelValue', 'submit', 'delete'])
@@ -108,7 +108,7 @@
     isUpdate?: boolean;
     modelValue: any;
     message: string;
-    messageType?: "error" | "success"
+    messageType?: string
   }
 
   const props = withDefaults(defineProps<Props>(), {

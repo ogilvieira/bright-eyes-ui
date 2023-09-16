@@ -1,6 +1,6 @@
 <template>
-  <app-bar title="Editar Produto" :back-button="true"/>
-  <v-container class="pt-3" fluid>
+  <app-bar title="Editar Produto" :back-button="`/catalogo/${id}`"/>
+  <v-container class="pt-3" fluid v-if="produtoForm">
     <FormProduto
       :isLoading="isLoading"
       :message="message"
@@ -11,25 +11,37 @@
       @delete="handleDelete"
     />
   </v-container>
+  <v-container v-if="!produtoForm && !isLoading">
+    <v-row style="height: 300px;" class="d-flex align-center">
+      <v-col>
+        <div>
+          <div class="text-center">
+            <div class="text-body">Item não encontrado.</div>
+            <div class="pt-6">
+              <v-btn @click="router.push('/catalogo')" color="primary" rounded elevation="0" size="small" prepend-icon="mdi-arrow-left">
+                Voltar
+              </v-btn>
+            </div>
+          </div>
+        </div>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script lang="ts" setup>
   import AppBar from '@/components/AppBar.vue';
   import { ref, onMounted } from 'vue';
-  import { useRoute } from "vue-router";
+  import { useRoute, useRouter } from "vue-router";
   import FormProduto from '@/components/FormProduto.vue';
   import Api from '@/services/api';
+
+  const router = useRouter();
 
   const route = useRoute();
   const { id } = route.params;
 
-  const produtoForm = ref({
-    nome: '',
-    fabricante: '',
-    preco: '',
-    descricao: '',
-    imagem: '',
-  });
+  const produtoForm = ref();
 
   const isLoading = ref(true);
   const message = ref('');
@@ -41,7 +53,7 @@
 
     try {
       const res = await Api({ requiresAuth: true }).put<any, any>(`/produto/${id}`, {
-        nome: produtoForm.value.nome,
+        name: produtoForm.value.name,
         fabricante: produtoForm.value.fabricante,
         preco: produtoForm.value.preco,
         descricao: produtoForm.value.descricao,
@@ -50,6 +62,7 @@
 
       messageType.value = 'success';
       message.value = res?.message || "Produto atualizado com sucesso!";
+      isLoading.value = false;
     } catch (err: any) {
       console.error(err);
       messageType.value = 'error';
@@ -68,6 +81,9 @@
 
       messageType.value = 'success';
       message.value = res?.message || "Produto atualizado com sucesso!";
+      setTimeout(() => {
+        router.push(`/catalogo`)
+      }, 1000);
     } catch (err: any) {
       console.error(err);
       messageType.value = 'error';
@@ -86,8 +102,12 @@
   }
 
   const fetchProduct = async () => {
-    const res = await Api().get<IProduto,any>(`/produto/${id}`);
-    produtoForm.value = res;
+    try {
+      const res = await Api().get<IProduto,any>(`/produto/${id}`);
+      produtoForm.value = res;
+    } catch (err) {
+      console.error(err);
+    }
     isLoading.value = false;
   }
 
