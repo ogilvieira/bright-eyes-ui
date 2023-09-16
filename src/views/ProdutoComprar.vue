@@ -1,5 +1,5 @@
 <template>
-  <div v-if="produtoData">
+  <v-container v-if="produtoData">
     <div class="py-6" v-if="step <= 1">
       <card-produto
         :title="produtoData.name"
@@ -156,6 +156,8 @@
               </v-btn>
             </div>
 
+            <v-alert v-if="errorMessage" :text="errorMessage" color="error" variant="tonal"></v-alert>
+
           </v-form>
         </v-col>
       </v-row>
@@ -172,7 +174,7 @@
       </div>
     </section>
 
-  </div>
+  </v-container>
 </template>
 
 <script lang="ts" setup>
@@ -182,6 +184,7 @@
   import CardProduto from '@/components/CardProduto.vue';
   import validator from 'validator';
   import validatorBrazil from 'validator-brazil';
+  import toBase64 from '@/utils/toBase64';
 
   const router = useRouter();
   const route = useRoute();
@@ -190,23 +193,25 @@
   const isFetchingOrder = ref(false);
   const idPedido = ref(0);
   const step = ref(0);
+  const errorMessage = ref('');
   const form = ref({
     anexo: [],
-    cep: '',
-    logradouro: '',
-    numero: '',
+    cep: '02611001',
+    logradouro: 'av parada pinto',
+    numero: '12',
     complemento: '',
-    bairro: '',
-    cidade: '',
-    uf: '',
-    cc_numero: '',
-    cc_nome: '',
-    cc_data_expiracao: '',
-    cc_cvv: '',
+    bairro: 'VL NV CACHOEIRINHA',
+    cidade: 'São Paulo',
+    uf: 'SP',
+    cc_numero: '4304-1380-5478-7364',
+    cc_nome: 'Gil VIeira',
+    cc_data_expiracao: '02/30',
+    cc_cvv: '123',
     parcelas: 1
   });
 
   interface IProduto {
+    id: number;
     name: string;
     fabricante: string;
     preco: string | number;
@@ -228,7 +233,7 @@
   const isFormAnexoValid = ref(false);
   const fieldsAnexo = ref<FieldType[]>([
     {
-      key: 'receita',
+      key: 'anexo',
       label: 'Receita',
       rules: [
         value => (value && !!value.length) || 'Arquivo é requerido.',
@@ -391,9 +396,46 @@
   }
 
   const fetchOrder = async () => {
-    if(!isFormAnexoValid.value || !isFormEnderecoValid.value || !isFormCartaoValid.value){ return; }
+    if(!isFormAnexoValid.value || !isFormEnderecoValid.value || !isFormCartaoValid.value || !produtoData.value?.id){ return; }
     isFetchingOrder.value = true;
-    console.info(form.value);
+    try {
+      const anexoBase64 = await toBase64(form.value.anexo[0]);
+
+      const objOrder = {
+        produtoId: produtoData.value.id,
+        receita: anexoBase64,
+        cep: (form.value.cep || '').replace(/\D/, ''),
+        cc_numero: (form.value.cc_numero || '').replace(/\D/, ''),
+      }
+
+      const listFields: string[] = [
+        'parcelas',
+        'logradouro',
+        'numero',
+        'complemento',
+        'bairro',
+        'cidade',
+        'uf',
+        'cc_nome',
+        'cc_data_expiracao',
+        'cc_cvv'
+      ]
+
+      listFields.forEach( key => {
+        objOrder[key] = form.value[key] ?? null;
+      });
+      const res = await Api({ requiresAuth: true }).post<any,any>('/compra', objOrder);
+      if( !res.id ) {
+        throw Error("Pedido não realizado.")
+      }
+      idPedido.value = res.id;
+      handleGoToStep(4);
+      isFetchingOrder.value = false;
+      console.info(res);
+    } catch (err: any) {
+      errorMessage.value = err?.errorMessage || 'Erro ao tentar realizar o pedido.';
+      isFetchingOrder.value = false;
+    }
   }
 
   onMounted(async () => {

@@ -1,7 +1,7 @@
 <template>
   <app-bar title="Catálogo"/>
 
-  <v-container>
+  <v-container fluid>
     <v-row>
       <v-col>
         <v-text-field
@@ -105,7 +105,7 @@
     descricao: string;
   }
 
-  const fetchProducts = async (localPage: number = 1, terms: string | null = null) => {
+  const fetchProducts = async (localPage: number = 1, termsLocal: string | null = '') => {
     if( isLoading.value || (localPage !== 1 && !canPaginate.value)) { return; }
 
     isLoading.value = true;
@@ -113,7 +113,7 @@
       const res = await Api().get<any,any>('/produtos', {
         params: {
           page: localPage,
-          terms
+          terms: termsLocal
         }
       });
 
@@ -130,7 +130,7 @@
       router.push({ path: route.path,
         query: {
           ...route.query,
-          terms: terms
+          terms: termsLocal
         }
       });
     } catch (err) {
