@@ -48,11 +48,16 @@
   import CardPedido from '@/components/CardPedido.vue';
   import { useEventListener } from '@vueuse/core'
 
+  interface IProduto {
+    imagem: string;
+  }
+
   interface IPedido {
     id: number,
     created_at: Date,
     total: number,
     parcelas: number,
+    produto: IProduto,
     data_entrega: Date,
     status: "recebido" | "aguardando" | "enviado" | "cancelado"
   }
