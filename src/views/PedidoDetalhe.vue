@@ -68,27 +68,56 @@
 
 
     <div v-if="pedidoData.status === 'recebido'">
-      <v-btn block color="primary" elevation="0" class="mb-5" rounded>
+      <v-btn :loading="isLoading" block color="primary" @click="handleToApprove()" elevation="0" class="mb-5" rounded>
         APROVAR PEDIDO
       </v-btn>
 
-      <v-btn block color="error" elevation="0" rounded>
+      <v-btn :loading="isLoading" block color="error" @click="handleToCancel()" elevation="0" rounded>
         CANCELAR PEDIDO
       </v-btn>
     </div>
 
     <div v-if="pedidoData.status === 'aguardando'">
-      <v-form>
+      <v-form @submit.prevent="handleToDeliver()" v-model="isFormDeliverValid">
 
+        <v-row>
+          <v-col>
+            <v-text-field
+              label="Rastreio"
+              variant="outlined"
+              color="secondary"
+              type="input"
+              v-model="formDeliver.rastreio"
+              :rules="[value => !validator.isEmpty(value) || 'Rastreio é requerido.']"
+              :disabled="isLoading"
+              hide-details="auto"
+            >
+            </v-text-field>
+          </v-col>
+        </v-row>
 
-
+        <v-row class="mb-1">
+          <v-col>
+            <v-text-field
+              label="Prazo de Entrega"
+              variant="outlined"
+              color="secondary"
+              type="date"
+              v-model="formDeliver.data_entrega"
+              :rules="[value => !isNaN(Date.parse(value)) || 'Prazo de entrega inválido.']"
+              :disabled="isLoading"
+              hide-details="auto"
+            >
+            </v-text-field>
+          </v-col>
+        </v-row>
 
         <div>
-          <v-btn block color="primary" elevation="0" class="mb-5" rounded>
-            APROVAR PEDIDO
+          <v-btn type="submit" :disabled="!isFormDeliverValid" :loading="isLoading" block color="primary" elevation="0" class="mb-5" rounded>
+            ENVIAR PEDIDO
           </v-btn>
 
-          <v-btn block color="error" elevation="0" rounded>
+          <v-btn type="button" :loading="isLoading" block color="error" @click="handleToCancel()" elevation="0" rounded>
             CANCELAR PEDIDO
           </v-btn>
         </div>
@@ -108,6 +137,7 @@
   import { ref, onMounted } from 'vue';
   import { useRoute } from "vue-router";
   import dayjs from 'dayjs';
+  import validator from 'validator';
 
   const route = useRoute();
   const { id } = route.params;
@@ -164,6 +194,51 @@
         w.document.getElementsByTagName("iframe")[0].style.height = '100%';
     }, 0);
   }
+
+  const handleToApprove = async () =>  {
+    isLoading.value = true;
+    try {
+      await Api({ requiresAuth: true }).post(`/pedido/${id}/aprovar`);
+      fetchPedido();
+    } catch (err) {
+
+      isLoading.value = false;
+    }
+  }
+
+  const handleToCancel = async () =>  {
+    isLoading.value = true;
+    try {
+      await Api({ requiresAuth: true }).post(`/pedido/${id}/cancelar`);
+      fetchPedido();
+    } catch (err) {
+
+      isLoading.value = false;
+    }
+  }
+
+  const isFormDeliverValid = ref(false);
+  const formDeliver = ref({
+    rastreio: '',
+    data_entrega: ''
+  });
+
+  const handleToDeliver = async () =>  {
+    if(!isFormDeliverValid.value) {
+      return;
+    }
+    isLoading.value = true;
+    try {
+      await Api({ requiresAuth: true }).post(`/pedido/${id}/enviar`, {
+        ...formDeliver.value
+      });
+      fetchPedido();
+    } catch (err) {
+
+      isLoading.value = false;
+    }
+  }
+
 
   onMounted(async () => {
     await fetchPedido();

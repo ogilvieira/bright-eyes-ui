@@ -83,6 +83,12 @@ const routes = [
         name: 'CompraDetalhe',
         meta: { userTypesAccess: ['cliente'] } as RouteMetaType,
         component: () => import('@/views/CompraDetalhe.vue'),
+      },
+      {
+        path: '/customer/:id',
+        name: 'Customer',
+        meta: { userTypesAccess: ['gerente', 'editor'] } as RouteMetaType,
+        component: () => import('@/views/Customer.vue'),
       }
     ],
   },
