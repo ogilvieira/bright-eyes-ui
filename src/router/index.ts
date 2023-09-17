@@ -89,6 +89,30 @@ const routes = [
         name: 'Customer',
         meta: { userTypesAccess: ['gerente', 'editor'] } as RouteMetaType,
         component: () => import('@/views/Customer.vue'),
+      },
+      {
+        path: '/users',
+        name: 'User',
+        meta: { userTypesAccess: ['gerente'] } as RouteMetaType,
+        component: () => import('@/views/Users.vue'),
+      },
+      {
+        path: '/users/buscar',
+        name: 'UserBuscar',
+        meta: { userTypesAccess: ['gerente'] } as RouteMetaType,
+        component: () => import('@/views/UsersBuscar.vue'),
+      },
+      {
+        path: '/users/novo',
+        name: 'UserNovo',
+        meta: { userTypesAccess: ['gerente'] } as RouteMetaType,
+        component: () => import('@/views/UserNovo.vue'),
+      },
+      {
+        path: '/users/:id/editar',
+        name: 'UserEditar',
+        meta: { userTypesAccess: ['gerente'] } as RouteMetaType,
+        component: () => import('@/views/UserEditar.vue'),
       }
     ],
   },
